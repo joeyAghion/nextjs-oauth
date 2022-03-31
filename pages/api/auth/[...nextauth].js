@@ -16,7 +16,27 @@ export default NextAuth({
           name: "Artsy",
           type: "oauth",
           authorization: "https://stagingapi.artsy.net/oauth2/authorize",
-          token: "https://stagingapi.artsy.net/oauth2/access_token",
+          token: {
+            url: "https://stagingapi.artsy.net/oauth2/access_token",
+            async request(context) {
+              console.log("context", context) //DEBUG
+              // context contains useful properties to help you make the request.
+              // const tokens = await makeTokenRequest(context)
+
+              const response = await authenticatedPost.call(
+                context.client,
+                'token',
+                {
+                  form: body,
+                  responseType: 'json',
+                },
+                { clientAssertionPayload, DPoP },
+              );
+              let responseBody;
+
+              return {} //{ tokens }
+            }
+          },
           client: {
             token_endpoint_auth_method: "client_secret_post",
           },
